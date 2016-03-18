@@ -1,0 +1,53 @@
+{
+  "name": "chat",
+  "version": "0.1.0",
+  "description": "",
+  "author": {
+    "name": "Caio Vaccaro",
+    "url": "http://caiovaccaro.com"
+  },
+  "scripts": {
+    "bundle": "WEBPACK_ENV=dist webpack -p",
+    "bundle:dev": "webpack -d",
+    "dev:tasks": "npm run bundle:dev --loglevel=silent & npm run test --loglevel=silent",
+    "dev": "./node_modules/.bin/watch 'npm run dev:tasks' src",
+    "watch": "webpack -d --watch",
+    "jshint": "./node_modules/jshint/bin/jshint ./src",
+    "jscs": "./node_modules/jscs/bin/jscs ./src",
+    "jscsfix": "./node_modules/jscs/bin/jscs ./src --fix",
+    "unit-pretty": "./node_modules/.bin/babel-node ./node_modules/.bin/blue-tape src/tests/unit/*.js | ./node_modules/.bin/faucet",
+    "integration-pretty": "./node_modules/.bin/babel-node ./node_modules/.bin/blue-tape src/tests/integration/*.js | ./node_modules/.bin/faucet",
+    "test": "npm run unit-pretty && npm run integration-pretty"
+  },
+  "devDependencies": {
+    "babel-cli": "6.6.4",
+    "babel-core": "6.0.20",
+    "babel-eslint": "5.0.0-beta6",
+    "babel-loader": "6.0.1",
+    "babel-plugin-add-module-exports": "0.1.2",
+    "babel-plugin-transform-runtime": "6.5.2",
+    "babel-polyfill": "6.5.0",
+    "babel-preset-es2015": "6.0.15",
+    "babel-preset-stage-2": "6.3.13",
+    "blue-tape": "0.1.11",
+    "browser-sync": "2.10.1",
+    "browser-sync-webpack-plugin": "1.0.1",
+    "extract-text-webpack-plugin": "0.9.1",
+    "faucet": "0.0.1",
+    "jscs": "2.10.1",
+    "jshint": "2.9.1",
+    "node-libs-browser": "0.5.3",
+    "once": "1.3.3",
+    "split": "1.0.0",
+    "style-loader": "0.13.0",
+    "through2": "2.0.0",
+    "watch": "0.17.1",
+    "webpack": "1.12.9"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "mongodb": "^2.1.7",
+    "mongoose": "^4.4.8",
+    "socket.io": "^1.4.5"
+  }
+}

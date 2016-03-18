@@ -1,3 +1,7 @@
+.idea
+.DS_Store
+*.gzip
+
 # Logs
 logs
 *.log
