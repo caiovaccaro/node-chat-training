@@ -1,0 +1,10 @@
+Zup.
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  socket.emit('event', 'wow');
+  socket.on('uaaaa', function() {
+  	console.log(1);
+  });
+</script>

@@ -7,6 +7,7 @@
     "url": "http://caiovaccaro.com"
   },
   "scripts": {
+    "start": "./node_modules/.bin/nodemon app.js",
     "bundle": "WEBPACK_ENV=dist webpack -p",
     "bundle:dev": "webpack -d",
     "dev:tasks": "npm run bundle:dev --loglevel=silent & npm run test --loglevel=silent",
@@ -37,6 +38,7 @@
     "jscs": "2.10.1",
     "jshint": "2.9.1",
     "node-libs-browser": "0.5.3",
+    "nodemon": "^1.9.1",
     "once": "1.3.3",
     "split": "1.0.0",
     "style-loader": "0.13.0",
