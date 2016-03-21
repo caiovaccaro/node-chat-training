@@ -1,9 +1,11 @@
-FROM node:5.4.0
+FROM node:5.7.0
 
 RUN mkdir -p /app
 
 ADD . /app
+RUN npm i
+
 WORKDIR /app
 EXPOSE 4000
 
-CMD while true; do sleep 1000; done
+CMD npm start
