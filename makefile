@@ -5,7 +5,7 @@ setup:
 	@docker build -t huge/chat .
 
 up:
-	@docker run --name="chat" -d -p 4000:4000 -v $(PWD):/app huge/chat
+	@docker run --name="chat" -p 4000:4000 -v $(PWD):/app huge/chat
 
 remake:
 	@docker rm -f chat && docker rmi huge/chat && make setup
