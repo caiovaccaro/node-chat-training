@@ -7,7 +7,7 @@
     "url": "http://caiovaccaro.com"
   },
   "scripts": {
-    "start": "./node_modules/.bin/nodemon app.js",
+    "start": "./node_modules/.bin/nodemon /src/app.js",
     "bundle": "WEBPACK_ENV=dist webpack -p",
     "bundle:dev": "webpack -d",
     "dev:tasks": "npm run bundle:dev --loglevel=silent & npm run test --loglevel=silent",

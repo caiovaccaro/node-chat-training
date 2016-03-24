@@ -1,0 +1,15 @@
+Zuppp.
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  socket.on('connected', function() {
+  	document.write('<br><br>a user connected');
+  });
+  socket.on('disconnected', function() {
+  	document.write('<br><br>a user disconnected');
+  });
+  socket.on('cheio', function() {
+  	document.write('<br><br>ta cheio pra caralho essa porra');
+  });
+</script>
