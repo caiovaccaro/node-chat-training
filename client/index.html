@@ -1,15 +1,42 @@
-Zuppp.
+<style type="text/css">
+	textarea {
+		width: 100%;
+		height: calc(100vh - 30px);
+	}
+</style>
+
+<textarea></textarea>
+<input id="message" type="text" />
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io();
-  socket.on('connected', function() {
-  	document.write('<br><br>a user connected');
+  var socket = io(),
+  	input = document.getElementById("message"),
+  	textarea = document.getElementsByTagName("textarea")[0],
+  	user;
+
+  socket.on("connected", function(data) {
+  	user = data.user;
+  	input.setAttribute("placeholder", "Fala " + user);
   });
-  socket.on('disconnected', function() {
-  	document.write('<br><br>a user disconnected');
+
+  input.addEventListener("keyup", function(event) {
+  	event.preventDefault();
+  	if (event.keyCode === 13) {
+  		emitMessage(this.value);
+  		this.value = "";
+  	}
   });
-  socket.on('cheio', function() {
-  	document.write('<br><br>ta cheio pra caralho essa porra');
+
+  socket.on("client-message", function(data) {
+  	appendMessage(data.message);
   });
+
+  function emitMessage(message) {
+  	socket.emit("message", { message: message, user: user })
+  }
+
+  function appendMessage(message) {
+  	textarea.value += message + "\n\n";
+  }
 </script>

@@ -1,26 +1,25 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var users = 0;
+var users = {};
 
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected!!');
+	users[socket.id] = { name: Object.keys(users).length, id: socket.id };
 
-  io.emit('connected', { for: 'everyone' });
-  users++;
+  io.sockets.connected[users[socket.id].id].emit('connected', { user: users[socket.id].name });
+  io.emit('client-message', { message: "User " + users[socket.id].name + " entrou." });
 
-  if(users === 4) {
-  	io.emit('cheio', { for: 'everyone' });
-  }
+  socket.on('message', function(data){
+  	io.emit('client-message', { message: "User " + data.user + " disse: " + data.message });
+  });
 
   socket.on('disconnect', function(){
-  	users--;
   	io.emit('disconnected', { for: 'everyone' });
-    console.log('user disconnected');
+    io.emit('client-message', { message: "User " + users[socket.id].name + " saiu :(" });
   });
 });
 
