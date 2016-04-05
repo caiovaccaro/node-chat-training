@@ -10,16 +10,22 @@ app.get('/', function(req, res) {
 io.on('connection', function(socket){
 	users[socket.id] = { name: Object.keys(users).length, id: socket.id };
 
-  io.sockets.connected[users[socket.id].id].emit('connected', { user: users[socket.id].name });
-  io.emit('client-message', { message: "User " + users[socket.id].name + " entrou." });
-
-  socket.on('message', function(data){
-  	io.emit('client-message', { message: "User " + data.user + " disse: " + data.message });
+  socket.on('message', function(coco){
+  	io.emit('client-message', { message: coco.user + " disse: " + coco.message });
   });
 
-  socket.on('disconnect', function(){
-  	io.emit('disconnected', { for: 'everyone' });
-    io.emit('client-message', { message: "User " + users[socket.id].name + " saiu :(" });
+	socket.on('save-user', function(data){
+  	users[socket.id].name = data.user;
+		io.emit('user-saved');
+		io.sockets.connected[users[socket.id].id].emit('connected', { user: users[socket.id].name });
+		io.emit('user-connected', { users: users });
+	  io.emit('client-message', { message: users[socket.id].name + " entrou.", className: "info" });
+  });
+
+  socket.on('disconnect', function() {
+    io.emit('client-message', { message: users[socket.id].name + " saiu :(", className: "info" });
+		delete users[socket.id];
+  	io.emit('disconnected', { users: users });
   });
 });
 

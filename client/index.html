@@ -1,42 +1,139 @@
 <style type="text/css">
-	textarea {
+	* {
+		box-sizing: border-box;
+	}
+	#chat {
 		width: 100%;
 		height: calc(100vh - 30px);
+		border: 1px solid black;
+		font-family: Arial, sans-serif;
+		padding: 15px;
+	}
+	#chat span {
+		display: block;
+	}
+	.hidden {
+		display: none;
+	}
+	.info {
+		font-size: 10px;
+		color: #ccc;
+	}
+	.logged_in .left {
+		width: 75%;
+		float: left;
+	}
+	.logged_in .right {
+		width: 25%;
+		float: left;
+	}
+	.users_online {
+		border: 1px solid black;
+		padding: 10px;
 	}
 </style>
 
-<textarea></textarea>
-<input id="message" type="text" />
+<div class="logged_off">
+	<input type="text" placeholder="Digite seu nome..." id="nome">
+</div>
+<div class="logged_in hidden">
+	<div class="left">
+		<div id="chat"></div>
+		<input id="message" type="text" />
+	</div>
+	<div class="right">
+		<div class="users_online">
+			<h3>Usuários online:</h3>
+			<ul id="users"></ul>
+		</div>
+	</div>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io(),
-  	input = document.getElementById("message"),
-  	textarea = document.getElementsByTagName("textarea")[0],
+  	messageInput = document.getElementById("message"),
+		nameInput = document.getElementById("nome"),
+  	textarea = document.getElementById("chat"),
+		login = document.querySelectorAll(".logged_off")[0],
+		chat = document.querySelectorAll(".logged_in")[0],
+		sidebar = document.getElementById("users"),
   	user;
 
   socket.on("connected", function(data) {
   	user = data.user;
-  	input.setAttribute("placeholder", "Fala " + user);
+  	messageInput.setAttribute("placeholder", "Fala " + user);
   });
 
-  input.addEventListener("keyup", function(event) {
-  	event.preventDefault();
-  	if (event.keyCode === 13) {
-  		emitMessage(this.value);
-  		this.value = "";
-  	}
+	socket.on("user-connected", function(data) {
+		updateUsersList(data.users);
+  });
+
+	socket.on("disconnected", function(data) {
+		updateUsersList(data.users);
   });
 
   socket.on("client-message", function(data) {
-  	appendMessage(data.message);
+  	appendMessage(data.message, data.className);
   });
+
+	socket.on("user-saved", function() {
+  	enterChat();
+  });
+
+	onInputEnter(messageInput, function() {
+		emitMessage(messageInput.value);
+		messageInput.value = "";
+	});
+
+	onInputEnter(nameInput, function() {
+		if(nameInput.value === "") return false;
+		saveName(nameInput.value);
+	});
+
+	function onInputEnter(input, callback) {
+		input.addEventListener("keyup", function(event) {
+	  	event.preventDefault();
+	  	if (event.keyCode === 13) {
+	  		callback();
+	  	}
+	  });
+	}
+
+	function enterChat() {
+		login.classList.add("hidden");
+		chat.classList.remove("hidden");
+	}
+
+	function saveName(name) {
+		user = name;
+		socket.emit("save-user", { user: name });
+	}
 
   function emitMessage(message) {
   	socket.emit("message", { message: message, user: user })
   }
 
-  function appendMessage(message) {
-  	textarea.value += message + "\n\n";
+	function updateUsersList(users) {
+		var fragment = document.createDocumentFragment();
+
+		sidebar.innerHTML = "";
+
+		for(var user in users) {
+			var li = document.createElement("li");
+			li.innerHTML = users[user].name;
+			fragment.appendChild(li);
+		}
+
+		sidebar.appendChild(fragment);
+	}
+
+  function appendMessage(message, className) {
+		var child = document.createElement('span');
+		child.innerHTML = message;
+
+		if(typeof className !== "undefined") child.classList.add(className);
+
+  	textarea.appendChild(child);
   }
 </script>
